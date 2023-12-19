@@ -1,0 +1,220 @@
+body{
+    margin: 0px;
+    color: white;
+    font-size: 24px;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+
+h1,h2,h3,h4,h5,h6,p{
+    margin: 0px;
+}
+
+.logo{
+    text-align: center;
+}
+
+.logo a{
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/*login page*/
+
+.authen{
+    background-color: #0D4AB1;
+    display: flex;
+    align-items: center;
+}
+
+.authen img{
+    height: 100vh;
+    width: 50vw;
+}
+
+.login{
+    width: 50vw;
+}
+
+.login form{
+    display: flex;
+    flex-direction: column;
+    margin: 0% 20%;
+    row-gap: 20px;
+}
+
+#input{
+    display: flex; 
+    flex-direction: column; 
+    row-gap: 8px;
+}
+
+#input label{
+    margin-left: 16px;
+}
+
+#input input{
+    height: 50px;
+    border: none;
+    border-radius: 50px;
+    padding-left: 16px;
+    font-size: 16px;
+}
+
+#submit{
+    display: flex;
+}
+
+#submit button{
+    width: 100%;
+    height: 50px;
+    border: 4px solid white;
+    border-radius: 50px;
+    background-color: transparent;
+    font-size: 24px;
+    color: white;
+}
+
+/*login page*/
+
+/*homepge*/
+
+#site_header{
+    padding: 16px;
+    background-color: #22B9C1;
+}
+
+#site_header nav{
+    display: flex;
+    justify-content: space-between;
+}
+
+#topnav{
+    display: flex;
+    column-gap: 32px;
+    align-self: self-end;
+}
+
+#topnav a {
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+/*homepge*/
+
+/*footer*/
+
+#footer{
+    padding: 32px;
+    background-color: #173973;
+}
+
+.footer1{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.footer2{
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-top: 40px;
+}
+
+.footer2 div{
+margin-right: 24px;
+}
+
+.footer2 p{
+color: white;
+font-size: 32px;
+margin: 16px 0px;
+}
+
+.footer2 ion-icon{
+margin: 8px;
+color: white;
+font-size: 40px;
+}
+
+.footer2 div div{
+display: flex;
+}
+
+.except p{
+font-size: 24px;
+align-items: center;
+}
+
+.social-pages{
+display: inline;
+gap: 16px;
+}
+
+.social-pages ion-icon{
+margin: 8px;
+color: white;
+font-size: 40px;
+}
+
+
+/* responsive */
+
+@media (max-width:767px){
+
+    /*authentification*/
+    .authen{
+        flex-direction: column;
+    }
+
+    .authen img{
+        width: 100vw;
+        height: 50vh;
+    }
+
+    .login{
+        width: 100vw;
+        margin: 40px 0px;
+    }
+    /*authentification*/
+
+    /* review */
+
+    .rev-cont1{
+        display: block;
+    }
+
+    .rev-cont2{
+        display: block;
+    }
+
+    .comments{
+        margin-top: 40px;
+    }
+
+    /* review */
+
+    /*footer*/
+
+    .footer1{
+        flex-direction: column;
+        align-items: start;
+        gap: 40px;
+    }
+
+    .footer2{
+        flex-direction: column;
+        align-items: start;
+        gap: 40px;
+    }
+
+    /*footer*/
+
+}
+/* responsive */
