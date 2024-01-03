@@ -5,7 +5,7 @@ class Category{
     private $cat_descr;
     private $img;
     
-    public function __construct($id, $cat_name, $cat_descr, $img, ) {
+    public function __construct($id, $cat_name, $cat_descr, $img) {
         $this->id = $id; 
         $this->cat_name = $cat_name; 
         $this->cat_descr = $cat_descr; 

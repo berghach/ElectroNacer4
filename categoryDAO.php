@@ -32,7 +32,7 @@ class categoryDAO {
     }
 
     public function update_category($category){
-        $query= "UPDATE product SET cat_name= '".$category->getCat_name()."', cat_descr= ".$category->getCat_descr().",
+        $query= "UPDATE category SET cat_name= '".$category->getCat_name()."', cat_descr= ".$category->getCat_descr().",
                  img= '".$category->getImg()."' WHERE id= ".$category->getId()." ";
         echo $query;
         $stmt = $this->db->query($query);
@@ -46,7 +46,7 @@ class categoryDAO {
         $stmt -> execute();
     }
 
-    public function get_category($id){
+    public function get_category_by_id($id){
         $query= "SELECT * FROM category WHERE id=$id";
         $stmt= $this->db->query($query);
         $stmt -> execute();
@@ -63,7 +63,7 @@ class categoryDAO {
 
 // $D = 5;
 // $category = new categoryDAO();
-// $cat = $category ->get_category($D);
+// $cat = $category ->get_category_by_id($D);
 // echo $cat->getCat_name();
 // echo $cat->getCat_descr();
 

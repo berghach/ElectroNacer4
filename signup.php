@@ -55,7 +55,7 @@ session_start();
                     <input class="form-control mb-2" type="text" id="city" name="city" placeholder="City" required>
                     <input class="form-control mb-2" type="password" id="password" name="password" placeholder="Password" required>
                     <input class="form-control mb-2" type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
-                    <button class="tso btn btn-primary mt-4" type="submit">Sign Up</button>
+                    <button class="btn bg-light mt-4" type="submit">Sign Up</button>
                     <hr>
                     <div class="signup-link text-center">
                         <p>Already have an account? </p>

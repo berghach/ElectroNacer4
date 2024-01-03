@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 // Logout by destroying the session
 session_destroy();

@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION["admin_username"] = $username;
                     $_SESSION["is_admin"] = true;
     
-                    header("Location: homepage.php");
+                    header("Location: index.php");
                     exit();
                 }else {
                     echo "Error: Incorrect admin password.";
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION["client_username"] = $username;
                     $_SESSION["is_client"] = true;
 
-                    header("Location: homepage.php");
+                    header("Location: index.php");
                     exit();
                 }else {
                     echo "Error: Incorrect password.";
@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h2 class="text-center mb-4">Login</h2>
                 <input class="form-control mb-2" type="text" id="username" name="username" placeholder="Username" required>
                 <input class="form-control mb-2" type="password" id="password" name="password" placeholder="Password" required>
-                <button class="tso btn btn-primary  mt-4" type="submit">Login</button>
+                <button class="btn btn-light mt-4" type="submit">Login</button>
                 <hr>
                 <div class="signup-link text-center">
                     <p>Don't have an account? </p>
