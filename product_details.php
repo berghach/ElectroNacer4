@@ -49,43 +49,65 @@
                     <a href="items.php" class="nav-link">items</a>
                 </li>
             </ul>
-
-            <img width="48" src="img/user-286-128.png" alt="profile" class="user-pic">
-
+            <span class="navbar-text">
+            <a href="#" class="nav-link" data-toggle="modal" data-target="#cartModal">
+                <ion-icon class="fs-4" name="cart-outline"></ion-icon>
+            </a>
+            </span>
+            <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cartModalLabel">Shopping Cart</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="cartItems">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ion-icon name="person-outline" class="user-pic text-light fs-4 fw-bold icon-link icon-link-hover"></ion-icon>
+            <!-- <img width="48" src="assets/pics_electro/user_av.png" alt="profile" class="user-pic"> -->
             <div class="menuwrp" id="subMenu">
                 <div class="submenu">
                     <div class="userinfo">
-                    <?php
-            
-            $displayName = '';
-            $isAdmin = false;
-           
-            if (isset($_SESSION["admin_username"])) {
-              $displayName = $_SESSION["admin_username"];
-              $isAdmin = true;
-            } elseif (isset($_SESSION["username"])) {
-              $displayName = $_SESSION["username"];
-              $isAdmin = false;
-            } if (empty($displayName)) {
-                echo '<a href="login.php">Login</a>';
-            } else {
-                ?>
-                <div class="userinfo">
-                    <img src="img/user-286-128.png" alt="user">
-                    <h2>
-                        <?php echo $displayName; ?>
-                    </h2>
-                    <hr>
-                    <?php
-                    if ($isAdmin) {
-                        echo '<a href="adminpan.php">Admin Panel </a><br>';
-                    }
-                    echo '<a href="logout.php">Logout</a>'; 
-                    ?>
-                    <div>
-    <?php
-}
-?>
+                        <?php
+                        
+                        $displayName = '';
+                        $isAdmin = false;
+                    
+                        if (isset($_SESSION["admin_username"])) {
+                        $displayName = $_SESSION["admin_username"];
+                        $isAdmin = true;
+                        } elseif (isset($_SESSION["username"])) {
+                        $displayName = $_SESSION["username"];
+                        $isAdmin = false;
+                        } if (empty($displayName)) {
+                            echo '<a href="login.php">Login</a>';
+                        } else {
+                        ?>
+                        <div class="userinfo">
+                            <img src="assets/pics_electro/user_av.png" alt="user">
+                            <h2>
+                                <?php echo $displayName; ?>
+                            </h2>
+                            <hr>
+                            <?php
+                            if ($isAdmin) {
+                                echo '<a href="adminpan.php">Admin Panel </a><br>';
+                            }
+                            echo '<a href="logout.php">Logout</a>'; 
+                            ?>
+                                
+                            <?php
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -135,6 +157,13 @@
         }
         ?>
     </div>
+
+    <!--icones component-->
+    <!--  <ion-icon name=""></ion-icon>  -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <!--/icones component-->
+
 
     <script src="index.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

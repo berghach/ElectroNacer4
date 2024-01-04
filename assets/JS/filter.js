@@ -16,7 +16,7 @@ function filter_data(page) {
         };
     
         var data = "action=" + action +
-            "&category=" + JSON.stringify(category) +
+            "&category=" + category +
             "&search_query=" + searchQuery +
             "&sort_alphabetically=" + (sortAlphabetically ? 1 : 0) +
             "&stock_filter=" + (stockFilter ? 1 : 0) +

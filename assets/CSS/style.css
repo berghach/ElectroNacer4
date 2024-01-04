@@ -30,15 +30,13 @@ body {
       max-height: 0px;
       overflow: hidden;
       transition: max-height 0.5s;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);    
      
      }
     
     .menuwrpopen{
       max-height: 400px;
-      
-    
+      z-index: 1000;
      }
     
      .submenu{

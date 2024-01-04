@@ -16,11 +16,14 @@ $category = new categoryDAO();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
-    <link rel="stylesheet" href="assets/CSS/style.css">
+    <link rel="stylesheet" href="assets\CSS\style.css">
+    <link rel="stylesheet" href="assets\CSS\home.css">
+    <link rel="stylesheet" href="assets\CSS\basket.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-sm navbar-dark ">
+<nav class="navbar navbar-expand-sm navbar-dark z-1">
     <div class="container">
         <a href="#" class="navbar-brand">NE</a>
         
@@ -104,7 +107,7 @@ $category = new categoryDAO();
     </div>
 </nav>
 
-<div class="container">
+<div class="container z-0">
     <div class="row">
         <div class="col-md-3">
             <div class="list-group">
@@ -128,23 +131,21 @@ $category = new categoryDAO();
                     </label>
                     <?php
                         $categories=$category->get_categories();
+                        echo '<div class="list-group-item checkbox d-flex flex-column">';
                         foreach($categories as $cat) {
-                            echo '<div class="list-group-item checkbox">';
                             echo '<label>';
-                            echo '<input type="checkbox" class="common_selector category" value='.$cat->getCat_name().'>';
+                            echo '<input type="checkbox" class="common_selector category" value="'.$cat->getCat_name().'">';
                             echo '<img src="./assets/pics_electro/'.$cat->getImg().'" alt="Category Image" style="width: 50px; height: 50px;">';
                             echo $cat->getCat_name();
                             echo '</label>';
-                            echo '</div>';
-                            
                         }
+                        echo '</div>';
                     ?>
-                    
                 </div>
             </div>
         </div>
 
-        <div class="col-md-9">
+        <div class="col-md-9 z-0">
             <br />
             <div class="input-group mb-3">
                 <input type="text" id="search" class="form-control" placeholder="Search by product name">
@@ -159,7 +160,7 @@ $category = new categoryDAO();
 </div>
 
 
-<!--icones component-->
+    <!--icones component-->
     <!--  <ion-icon name=""></ion-icon>  -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
@@ -170,7 +171,7 @@ $category = new categoryDAO();
 <script src="assets\JS\cart.js"></script>
 <script src="assets\JS\filter.js"></script> 
 <script src="assets\JS\index.js"></script>
- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
