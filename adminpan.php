@@ -1,6 +1,18 @@
 <?php
 session_start();
 
+require_once("productDAO.php");
+$product = new productDAO();
+$products=$product-> get_products();
+require_once("categoryDAO.php");
+$category = new categoryDAO();
+require_once("clientDAO.php");
+$client=new clientDAO();
+require_once("adminDAO.php");
+$admin=new adminDAO();
+require_once("orderDAO.php");
+$order=new orderDAO();
+
 //Check if the user is logged in and is an admin
 if (isset($_SESSION["admin_username"])) {
     $isAdmin = true;
@@ -19,9 +31,7 @@ if (isset($_GET["delete_user"])) {
     $user_id = $_GET["delete_user"];
 
     // Delete client from the database
-    $delete_sql = $conn->prepare("DELETE FROM clients WHERE id = ?");
-    $delete_sql->bind_param("i", $user_id);
-    $delete_sql->execute();
+    $client->delete_client($user_id);
 
     // Redirect back to the admin panel
     header("Location: adminpan.php");
@@ -33,9 +43,7 @@ if (isset($_GET["verify_user"])) {
     $user_id = $_GET["verify_user"];
 
     // Update user's valide status to 1 (true)
-    $verify_sql = $conn->prepare("UPDATE clients SET valide = 1 WHERE id = ?");
-    $verify_sql->bind_param("i", $user_id);
-    $verify_sql->execute();
+    $client->verify_client($user_id);
 
     // Redirect back to the admin panel
     header("Location: adminpan.php");
@@ -46,9 +54,7 @@ if (isset($_GET["unverify_user"])) {
     $user_id = $_GET["unverify_user"];
 
     // Update user's valide status to 1 (true)
-    $verify_sql = $conn->prepare("UPDATE clients SET valide = 0 WHERE id = ?");
-    $verify_sql->bind_param("i", $user_id);
-    $verify_sql->execute();
+    $client->unverify_client($user_id);
 
     // Redirect back to the admin panel
     header("Location: adminpan.php");
@@ -56,14 +62,14 @@ if (isset($_GET["unverify_user"])) {
 }
 
 
-// Retrieve all for display 
-//$select_users_sql = "SELECT * FROM users";
-$client_result = $conn->query("SELECT * FROM clients");
-//$select_admins_sql = "SELECT * FROM admins";
-$admins_result = $conn->query("SELECT * FROM admins");
-$order_result = $conn->query("SELECT orders.id, orders.creation_date, clients.fullname 
-                                FROM orders  INNER JOIN clients 
-                                ON orders.client_id=clients.id");
+// // Retrieve all for display 
+// //$select_users_sql = "SELECT * FROM users";
+// $client_result = $conn->query("SELECT * FROM clients");
+// //$select_admins_sql = "SELECT * FROM admins";
+// $admins_result = $conn->query("SELECT * FROM admins");
+// $order_result = $conn->query("SELECT orders.id, orders.creation_date, clients.fullname 
+//                                 FROM orders  INNER JOIN clients 
+//                                 ON orders.client_id=clients.id");
 
 ?>
 
@@ -73,14 +79,17 @@ $order_result = $conn->query("SELECT orders.id, orders.creation_date, clients.fu
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets\CSS\style.css">
+    <link rel="stylesheet" href="assets\CSS\home.css">
+    <link rel="stylesheet" href="assets\CSS\basket.css">
+
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
 </head>
 <!--style="background: linear-gradient(to bottom, #6ab1e7,#023364)"-->
 <body>
-<nav class="navbar navbar-expand-sm navbar-dark ">
+<nav class="navbar navbar-expand-sm navbar-dark z-1">
     <div class="container">
         <a href="#" class="navbar-brand">NE</a>
         
@@ -163,6 +172,7 @@ $order_result = $conn->query("SELECT orders.id, orders.creation_date, clients.fu
         </div>
     </div>
 </nav>
+
     <div class="container mt-5">
         <h2 class="mb-4 text-center">Admin Panel</h2>
         <h3 class="mb-4 text-center">Clients</h3>
@@ -178,23 +188,24 @@ $order_result = $conn->query("SELECT orders.id, orders.creation_date, clients.fu
             </thead>
             <tbody>
                 <?php
-                while ($client_row = $client_result->fetch_assoc()) {
+                $clients = $client->get_client();
+                foreach ($clients as $cl) {
                     echo "<tr>";
-                    echo "<td>{$client_row['id']}</td>";
-                    echo "<td>{$client_row['username']}</td>";
-                    echo "<td>{$client_row['email']}</td>";
-                    if ($client_row['valide']==0){
+                    echo "<td>".$cl->getId()."</td>";
+                    echo "<td>".$cl->getUsername()."</td>";
+                    echo "<td>".$cl->getE_mail()."</td>";
+                    if ($cl->getActiv_account()==0){
                         echo "<td>unvalide</td>";
                     }else{
                         echo "<td>valide</td>";
                     }
                     echo "<td>";
-                    echo "<a href='adminpan.php?delete_user={$client_row['id']}' class='btn btn-danger btn-sm mr-2'>Delete</a>";
-                    if (isset($client_row['valide']) && $client_row['valide'] == 0) {
-                        echo "<a href='adminpan.php?verify_user={$client_row['id']}' class='btn btn-success btn-sm mr-2'>Verify</a>";
+                    echo "<a href='adminpan.php?delete_user=".$cl->getId()."' class='btn btn-danger btn-sm mr-2'>Delete</a>";
+                    if ( $cl->getActiv_account() == 0) {
+                        echo "<a href='adminpan.php?verify_user=".$cl->getId()."' class='btn btn-success btn-sm mr-2'>Verify</a>";
                     }
-                    if (isset($client_row['valide']) && $client_row['valide'] == 1) {
-                        echo "<a href='adminpan.php?unverify_user={$client_row['id']}' class='btn btn-warning btn-sm mr-2'>Unverify</a>";
+                    if ( $cl->getActiv_account() == 1) {
+                        echo "<a href='adminpan.php?unverify_user=".$cl->getId()."' class='btn btn-warning btn-sm mr-2'>Unverify</a>";
                     }
                     echo "</td>";
                     echo "</tr>";
@@ -215,11 +226,12 @@ $order_result = $conn->query("SELECT orders.id, orders.creation_date, clients.fu
             </thead>
             <tbody>
                 <?php
-                while ($admin_row = $admins_result->fetch_assoc()) {
+                $admins = $admin->get_admin();
+                foreach ($admins as $ad) {
                     echo "<tr>";
-                    echo "<td>{$admin_row['id']}</td>";
-                    echo "<td>{$admin_row['username']}</td>";
-                    echo "<td>{$admin_row['email']}</td>";
+                    echo "<td>".$ad->getId()."</td>";
+                    echo "<td>".$ad->getUsername()."</td>";
+                    echo "<td>".$ad->getEmail()."</td>";
                     echo "</tr>";
                 }
                 ?>
@@ -239,13 +251,15 @@ $order_result = $conn->query("SELECT orders.id, orders.creation_date, clients.fu
             </thead>
             <tbody>
                 <?php
-                    while ($order_row = $order_result->fetch_assoc()) {
+                    $orders = $order->get_order();
+                    foreach ($orders as $or) {
                         echo "<tr>";
-                        echo "<td>{$order_row['id']}</td>";
-                        echo "<td>{$order_row['creation_date']}</td>";
-                        echo "<td>{$order_row['fullname']}</td>";
+                        echo "<td>".$or->getId()."</td>";
+                        echo "<td>".$or->getCreation_date()."</td>";
+
+                        echo "<td>".$client->get_client_by_id($or->getId())->getFull_name()."</td>";
                         echo "<td>";
-                        echo "<a href='order_detail.php?reference={$order_row['id']}' class='btn btn-info btn-sm mr-2'>Detail</a>";
+                        echo "<a href='order_detail.php?reference=".$or->getId()."' class='btn btn-info btn-sm mr-2'>Detail</a>";
                         echo "</td>";
                         echo "</tr>";
                     }
@@ -260,9 +274,15 @@ $order_result = $conn->query("SELECT orders.id, orders.creation_date, clients.fu
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <!--/icones component-->
 
-    
-    <script src="index.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script src="assets\JS\cart.js"></script>
+<script src="assets\JS\filter.js"></script> 
+<script src="assets\JS\index.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
 
 </body>
 </html>

@@ -8,7 +8,7 @@ $category = new categoryDAO();
 
 
 $products = $product->get_products();
-$prodByAlfa = $product->get_products_by_alfa();
+// $prodByAlfa = $product->get_products_by_alfa();
 $prodByStock = $product->get_products_high_stock();
 // $prodBycategory = $product->get_products_by_category($c);
 
@@ -53,9 +53,19 @@ if(isset($_POST['page'])) {
 $limit = 8;
 $offset = ($page - 1) * $limit;
 
-echo $offset;
 
-if (isset($_POST["category"]) && !empty($_POST["category"])) {
+
+// echo $offset;
+
+/*$sortAlphabetically = isset($_POST['sort_alphabetically']) ? (bool)$_POST['sort_alphabetically'] : false;
+if($sortAlphabetically == true) {
+    $prodByAlfa = $product->get_products_by_alfa();
+    foreach( $prodByAlfa as $row ) {
+        echo generateProductCard($row);
+    }
+}*/
+
+/*if (isset($_POST["category"]) && !empty($_POST["category"])) {
     $category_array = json_decode($_POST["category"], true);
     if (is_array($category_array)) {
         $category_filter = implode("','", $category_array);
@@ -67,7 +77,8 @@ if (isset($_POST["category"]) && !empty($_POST["category"])) {
             }
         }
     }
-}
+}*/
+
 
 // foreach( $products as $row ) {
 // echo generateProductCard($row);

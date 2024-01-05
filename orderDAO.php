@@ -38,24 +38,24 @@ class orderDAO {
         $stmt = $this->db->query($query);
         $stmt -> execute();
     }
-    public function valid_order($order){
-        $query= "UPDATE orders SET bl = 1 WHERE id=".$order->getId()." ";
+    public function valid_order($id){
+        $query= "UPDATE orders SET bl = 1 WHERE id=$id ";
                 echo $query;
                 $stmt= $this->db->query($query);
                 $stmt -> execute();
 
     }
 
-    public function unverify_client($order){
-        $query= "UPDATE orders SET bl = 0 WHERE id=".$order->getId()." ";
+    public function unverify_client($id){
+        $query= "UPDATE orders SET bl = 0 WHERE id=$id ";
         echo $query;
         $stmt = $this->db->query($query);
         $stmt -> execute();
     }
 
     
-    public function delete_order($order){
-        $query= "DELETE FROM orders WHERE id=".$order->getId()." ";
+    public function delete_order($id){
+        $query= "DELETE FROM orders WHERE id=$id ";
         $stmt= $this->db->query($query);
         $stmt -> execute();
     }

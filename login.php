@@ -1,6 +1,6 @@
 <?php
-
-require_once("connection.php");//file of connection with database
+session_start();
+// require_once("connection.php");//file of connection with database
 require_once("clientDAO.php");// file DAO containe client method including get_client()
 $client = new clientDAO();
 $clients = $client->get_client();
@@ -8,7 +8,7 @@ require_once("adminDAO.php");
 $admin = new adminDAO();
 $admins=$admin-> get_admin();
 
-session_start(); // Start the session
+ // Start the session
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
@@ -32,14 +32,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }else{
         if (!empty($clients)) { //check if it's the client
             foreach( $clients as $cl){
-                if ($username == $cl->getUsername() && password_verify($password, $cl->getPsw())) {
-                    $_SESSION["client_username"] = $username;
-                    $_SESSION["is_client"] = true;
+                if ($username == $cl->getUsername()) {
+                    if(password_verify($password, $cl->getPsw())==true){
+                        $_SESSION["client_username"] = $username;
+                        $_SESSION["is_client"] = true;
 
-                    header("Location: index.php");
-                    exit();
-                }else {
-                    echo "Error: Incorrect password.";
+                        header("Location: index.php");
+                        exit();
+                    }else {
+                        echo "Error: Incorrect password.";
+                    }
                 }
             }
         } else {
@@ -55,7 +57,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets\CSS\style.css">
+    <link rel="stylesheet" href="assets\CSS\home.css">
+    <link rel="stylesheet" href="assets\CSS\basket.css">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -71,14 +75,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="container-fluid d-flex flex-column align-items-center p-2">
             <h1>Login</h1>
             <form class="login-form" action="login.php" method="POST">
-                <h2 class="text-center mb-4">Login</h2>
                 <input class="form-control mb-2" type="text" id="username" name="username" placeholder="Username" required>
                 <input class="form-control mb-2" type="password" id="password" name="password" placeholder="Password" required>
-                <button class="btn btn-light mt-4" type="submit">Login</button>
+                <button class="tso btn btn-primary  mt-4" type="submit">Login</button>
                 <hr>
                 <div class="signup-link text-center">
                     <p>Don't have an account? </p>
-                    <a class="text-light" href="signup.php">Sign up</a>
+                    <a href="signup.php">Sign up</a>
                 </div>
             </form>
         </div>
@@ -99,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!--/bootstrap-->
 
     <!--JS-->
-    <script src="./assets/JS/main.js"></script>
+    
     <!--/JS-->
 
 </body>

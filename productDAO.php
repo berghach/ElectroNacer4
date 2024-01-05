@@ -38,7 +38,7 @@ class productDAO {
     }
 
     public function get_deleted_products(){
-        $query="SELECT * FROM product WHERE bl=0 ORDER BY RAND()";
+        $query="SELECT * FROM product WHERE bl=0";
         $stmt= $this->db->query($query);
         $stmt -> execute();
         $ProductsData = $stmt -> fetchAll();

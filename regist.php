@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once("connection.php");
+
 require_once("Client.php"); //client class file
 require_once("clientDAO.php"); //DAO for client management
 

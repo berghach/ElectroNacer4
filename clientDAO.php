@@ -22,6 +22,18 @@ class clientDAO {
         return $Clients;
     }
 
+    public function get_client_by_id($id){
+        $query= "SELECT * FROM client WHERE id=$id";
+        $stmt= $this->db->query($query);
+        $stmt -> execute();
+        $ClientData = $stmt -> fetchAll();
+        foreach($ClientData as $C){
+            $Client = new Client($C["id"], $C["full_name"], $C["adresse"], $C["city"], $C["phonenumber"], $C["username"], $C["e_mail"], $C["psw"],$C["activ_account"]);
+            
+        }
+        return $Client;
+    }
+
 
     public function insert_client($client) {
         $query = "INSERT INTO client (full_name, adresse, city, phonenumber, username, e_mail, psw) 
@@ -53,24 +65,24 @@ class clientDAO {
         }
     }
     
-    public function verify_client($client){
-        $query= "UPDATE client SET activ_account = 1 WHERE id=".$client->getId()." ";
+    public function verify_client($id){
+        $query= "UPDATE client SET activ_account = 1 WHERE id=$id ";
                 echo $query;
                 $stmt= $this->db->query($query);
                 $stmt -> execute();
 
     }
 
-    public function unverify_client($client){
-        $query= "UPDATE client SET activ_account = 0 WHERE id=".$client->getId()." ";
+    public function unverify_client($id){
+        $query= "UPDATE client SET activ_account = 0 WHERE id=$id ";
         echo $query;
         $stmt = $this->db->query($query);
         $stmt -> execute();
     }
 
     
-    public function delete_client($client){
-        $query= "DELETE FROM client WHERE id=".$client->getId()." ";
+    public function delete_client($id){
+        $query= "DELETE FROM client WHERE id=$id ";
         $stmt= $this->db->query($query);
         $stmt -> execute();
     }

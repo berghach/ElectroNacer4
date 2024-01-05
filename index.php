@@ -265,5 +265,9 @@ require_once("adminDAO.php");
     <script src="assets/JS/cart.js"></script>
     <script src="assets/JS/filter.js"></script>
 
+    <?php
+    session_destroy();
+    ?>
+
 </body>
 </html>
