@@ -80,10 +80,10 @@ if($sortAlphabetically == true) {
 }*/
 
 
-// foreach( $products as $row ) {
-// echo generateProductCard($row);
-// }
-    
+foreach( $products as $row ) {
+echo generateProductCard($row);
+}
+
 
 ?>
 
