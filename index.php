@@ -138,7 +138,7 @@ require_once("adminDAO.php");
     
         
         <?php
-            $products=$product-> get_products_high_stock();
+            $products=$product->get_products_by_filter("SELECT * FROM product ORDER BY stock_quant DESC");
             echo '<div class="card-deck" style="margin: 50px;">';
             $limit = 5; 
             $counter = 0; 
@@ -149,6 +149,7 @@ require_once("adminDAO.php");
                     echo '<img class="card-img-top" src="./assets/pics_electro/'.$prod->getImg().'" alt="Card image cap">';
                     echo '<div class="card-body">';
                     echo '<h5 class="card-title">'.$prod->getProd_name().'</h5>';
+                    echo '<p>'.$prod->getProd_desc().'</p>';
                     echo '</div>';
                     echo '</div>';
 

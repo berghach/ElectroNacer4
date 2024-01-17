@@ -4,17 +4,9 @@ session_start();
 require_once("productDAO.php");
 $product = new productDAO();
 require_once("categoryDAO.php");
-$category = new categoryDAO();
-
-
-$products = $product->get_products();
-// $prodByAlfa = $product->get_products_by_alfa();
-$prodByStock = $product->get_products_high_stock();
-// $prodBycategory = $product->get_products_by_category($c);
-
-
-
 function generateProductCard($pr) {
+    $category = new categoryDAO();
+
     $isAdmin = isset($_SESSION['is_admin']);
 
     $adminButton = $isAdmin ? '<a href="Modify.php?product_id=' . $pr->getRef() . '" class="btn btn-danger btn-sm admin-only-button">Modify</a>' : '';
@@ -29,7 +21,7 @@ function generateProductCard($pr) {
                         <h6 class="card-subtitle mb-2 text-danger">DISCOUNT: DH ' . $pr->getOffer_price() . '</h6><br>
                         <p class="card-text">
                             <strong>Description:</strong> ' . $pr->getProd_desc() . '<br>
-                            <strong></strong> '. $pr->getCategory() .'  <br>
+                            <strong>Category:</strong> '. $category->get_category_by_id($pr->getCategory())->getCat_name() .'  <br>
                         </p>
                     </div>
                     <div class="card-footer bg-white">
@@ -54,36 +46,65 @@ $limit = 8;
 $offset = ($page - 1) * $limit;
 
 
+// Search filter
+// $searchQuery = mysqli_real_escape_string($conn, $_POST['search_query']);
+// $searchFilter = mysqli_real_escape_string($conn, $searchQuery);
 
-// echo $offset;
+// Stock filter
+// $stockFilter = isset($_POST['stock_filter']) ? $_POST['stock_filter'] : false;
 
-/*$sortAlphabetically = isset($_POST['sort_alphabetically']) ? (bool)$_POST['sort_alphabetically'] : false;
-if($sortAlphabetically == true) {
-    $prodByAlfa = $product->get_products_by_alfa();
-    foreach( $prodByAlfa as $row ) {
-        echo generateProductCard($row);
-    }
-}*/
+// Regular query
+$query = "SELECT product.* FROM product LEFT JOIN category ON category.id = product.category_fk WHERE product.bl = 1";
 
-/*if (isset($_POST["category"]) && !empty($_POST["category"])) {
+if (isset($_POST["category"]) && !empty($_POST["category"])) {
     $category_array = json_decode($_POST["category"], true);
-    if (is_array($category_array)) {
-        $category_filter = implode("','", $category_array);
-        echo "". $category_filter ."";
-        foreach ($category_array as $key) {
-            $prodBycategory = $product->get_products_by_category($key);
-            foreach( $prodBycategory as $row ) {
-                echo generateProductCard($row);
-            }
-        }
+
+    if (!empty($category_array)) {
+        $category_filter = implode(",", $category_array);
+        $query .= " AND category.cat_name IN ($category_filter)";
     }
-}*/
-
-
-foreach( $products as $row ) {
-echo generateProductCard($row);
 }
 
+if (isset($_POST['search_query']) && !empty($_POST['search_query'])) {
+    $searchFilter = $_POST['search_query'];
+    $query .= " AND product.prod_name LIKE '". $searchFilter ."%'";
+}
+
+if (isset($_POST['stock_filter']) && !empty($_POST['stock_filter'])) {
+    $query .= " AND product.stock_quant < product.min_quant";
+}
+if (isset($_POST['sort_alphabetically']) && !empty($_POST['sort_alphabetically'])) {
+    $query .= " ORDER BY product.prod_name ASC";
+}else{
+    $query .= " ORDER BY RAND()";
+}
+
+echo $query;
+
+$products = $product->get_products_by_filter($query);
+
+// $products = $product->get_products();
+
+
+$total_items = count($products);
+
+if ($total_items > 0) {
+    $count = 0;
+    while ($count < $limit && $offset<$total_items) {
+        echo generateProductCard($products[$offset]);
+        $offset++;
+        $count++;
+    }
+
+    // Generate pagination links for regular query
+    $total_regular_pages = ceil($total_items / $limit);
+    echo '<ul class="pagination">';
+    for ($i = 1; $i <= $total_regular_pages; $i++) {
+        echo '<li class="page-item"><a class="page-link pagination-link" href="#" onclick="filter_data(' . $i . ')" id="' . $i . '">' . $i . '</a></li>';
+    }
+    echo '</ul>';
+}else{
+    echo '<h5>No result</h5>';
+}
 
 ?>
-

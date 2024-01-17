@@ -23,38 +23,38 @@ session_start();
         <div class="container-fluid d-flex flex-column align-items-center p-2">
             <h1>Sign up</h1>
             <form class="d-flex flex-column p-4 rounded " action="regist.php" method="post">
-                    <input class="form-control mb-2" type="text" id="fullname" name="fullname" placeholder="Full Name" required>
+                    <input class="form-control mb-2" type="text" id="fullname" name="fullname" placeholder="Full Name" >
                     <?php
                         if (isset($_SESSION['register_errors']['fullname'])) {
                             echo '<div style="color: red; font-weight: bold; text-align: left;">' . $_SESSION['register_errors']['fullname'] . '</div>';
                         }
                     ?>
                     
-                    <input class="form-control mb-2" type="text" id="username" name="username" placeholder="Username" required>
+                    <input class="form-control mb-2" type="text" id="username" name="username" placeholder="Username" >
                     <?php
                         if (isset($_SESSION['register_errors']['username'])) {
                             echo '<div style="color: red; font-weight: bold; text-align: left;">' . $_SESSION['register_errors']['username'] . '</div>';
                         }
                     ?>
 
-                    <input class="form-control mb-2" type="email" id="email" name="email" placeholder="Email" required>
+                    <input class="form-control mb-2" type="email" id="email" name="email" placeholder="Email" >
                     <?php
                         if (isset($_SESSION['register_errors']['email'])) {
                             echo '<div style="color: red; font-weight: bold; text-align: left;">' . $_SESSION['register_errors']['email'] . '</div>';
                         }
                     ?>
 
-                    <input class="form-control mb-2" type="text" id="phonenumber" name="phonenumber" placeholder="Phone Number" required>
+                    <input class="form-control mb-2" type="text" id="phonenumber" name="phonenumber" placeholder="Phone Number" >
                     <?php
                         if (isset($_SESSION['register_errors']['phonenumber'])) {
                             echo '<div style="color: red; font-weight: bold; text-align: left;">' . $_SESSION['register_errors']['phonenumber'] . '</div>';
                         }
                     ?>
 
-                    <input class="form-control mb-2" type="text" id="adresse" name="adresse" placeholder="Address" required>
-                    <input class="form-control mb-2" type="text" id="city" name="city" placeholder="City" required>
-                    <input class="form-control mb-2" type="password" id="password" name="password" placeholder="Password" required>
-                    <input class="form-control mb-2" type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                    <input class="form-control mb-2" type="text" id="adresse" name="adresse" placeholder="Address" >
+                    <input class="form-control mb-2" type="text" id="city" name="city" placeholder="City" >
+                    <input class="form-control mb-2" type="password" id="password" name="password" placeholder="Password" >
+                    <input class="form-control mb-2" type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" >
                     <button class="btn bg-light mt-4" type="submit">Sign Up</button>
                     <hr>
                     <div class="signup-link text-center">

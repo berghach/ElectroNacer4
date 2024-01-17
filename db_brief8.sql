@@ -143,7 +143,7 @@ CREATE TABLE orders(
     total_price DECIMAL(10, 2),
     bl BOOLEAN DEFAULT 0,
     client_id INT,
-    FOREIGN KEY (client_id) REFERENCES client(id)
+    CONSTRAINT fk_client FOREIGN KEY (client_id) REFERENCES client(id)
 );
 
 --@block
@@ -151,7 +151,8 @@ CREATE TABLE orderproduct(
     order_id INT,
     product_ref INT,
     quantity INT,
+    price FLOAT(2),
     PRIMARY KEY(order_id, product_ref),
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
-    FOREIGN KEY (product_ref) REFERENCES product(ref)
+    CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    CONSTRAINT fk_product FOREIGN KEY (product_ref) REFERENCES product(ref)
 );

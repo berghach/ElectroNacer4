@@ -138,7 +138,7 @@ $category = new categoryDAO();
                         echo '<div class="list-group-item checkbox d-flex flex-column">';
                         foreach($categories as $cat) {
                             echo '<label>';
-                            echo '<input type="checkbox" class="common_selector category" value="'.$cat->getCat_name().'">';
+                            echo '<input type="checkbox" class="common_selector category" value='.$cat->getCat_name().'>';
                             echo '<img src="./assets/pics_electro/'.$cat->getImg().'" alt="Category Image" style="width: 50px; height: 50px;">';
                             echo $cat->getCat_name();
                             echo '</label>';

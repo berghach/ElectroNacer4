@@ -1,10 +1,12 @@
 function filter_data(page) {
-        var action = 'fetch_data';
+        var action = 'fetch_data.php';
         var category = get_filter('category');
         var searchQuery = document.getElementById('search').value.trim();
         var sortAlphabetically = document.getElementById('sort_alphabetically').checked;
         var stockFilter = document.getElementById('stock_filter').checked;
     
+// 
+
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "fetch_data.php", true);
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -22,6 +24,7 @@ function filter_data(page) {
             "&stock_filter=" + (stockFilter ? 1 : 0) +
             "&page=" + page;
         console.log(data);
+        console.log(category);
         xhr.send(data);
     }
     
@@ -31,10 +34,9 @@ function filter_data(page) {
         checkboxes.forEach(function (checkbox) {
             filter.push(checkbox.value);
         });
-    
         return filter;
     }
-    
+
     document.getElementById('search').addEventListener('input', function () {
         filter_data(1); // Reset to the first page when searching
     });

@@ -12,7 +12,7 @@
             "name": "brief8",
             "database": "brief8",
             "username": "root",
-            "askForPassword": true
+            "password": ""
         }
     ]
 }
