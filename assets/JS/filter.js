@@ -5,8 +5,6 @@ function filter_data(page) {
         var sortAlphabetically = document.getElementById('sort_alphabetically').checked;
         var stockFilter = document.getElementById('stock_filter').checked;
     
-// 
-
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "fetch_data.php", true);
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -15,7 +13,7 @@ function filter_data(page) {
                 // console.log(xhr.response);
                 document.querySelector('.filter_data').innerHTML = xhr.responseText;
             }
-        };
+        }
     
         var data = "action=" + action +
             "&category=" + category +
@@ -23,8 +21,7 @@ function filter_data(page) {
             "&sort_alphabetically=" + (sortAlphabetically ? 1 : 0) +
             "&stock_filter=" + (stockFilter ? 1 : 0) +
             "&page=" + page;
-        console.log(data);
-        console.log(category);
+        // console.log(data);
         xhr.send(data);
     }
     
@@ -46,7 +43,10 @@ function filter_data(page) {
             filter_data(1); // Reset to the first page when changing filters
         });
     });
-    
+    // console.log('category');
+    xhr.send(category);
+
     // Initial load
-filter_data(1);    
+filter_data(1);   
+
     

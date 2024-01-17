@@ -46,44 +46,28 @@ $limit = 8;
 $offset = ($page - 1) * $limit;
 
 
-// Search filter
-// $searchQuery = mysqli_real_escape_string($conn, $_POST['search_query']);
-// $searchFilter = mysqli_real_escape_string($conn, $searchQuery);
-
-// Stock filter
-// $stockFilter = isset($_POST['stock_filter']) ? $_POST['stock_filter'] : false;
-
 // Regular query
-$query = "SELECT product.* FROM product LEFT JOIN category ON category.id = product.category_fk WHERE product.bl = 1";
+$query = "SELECT * FROM product WHERE bl = 1";
 
 if (isset($_POST["category"]) && !empty($_POST["category"])) {
-    $category_array = json_decode($_POST["category"], true);
-
-    if (!empty($category_array)) {
-        $category_filter = implode(",", $category_array);
-        $query .= " AND category.cat_name IN ($category_filter)";
-    }
+    $query .= " AND category_fk IN (".$_POST["category"].")";
 }
 
 if (isset($_POST['search_query']) && !empty($_POST['search_query'])) {
     $searchFilter = $_POST['search_query'];
-    $query .= " AND product.prod_name LIKE '". $searchFilter ."%'";
+    $query .= " AND prod_name LIKE '". $searchFilter ."%'";
 }
 
 if (isset($_POST['stock_filter']) && !empty($_POST['stock_filter'])) {
-    $query .= " AND product.stock_quant < product.min_quant";
+    $query .= " AND stock_quant < min_quant";
 }
 if (isset($_POST['sort_alphabetically']) && !empty($_POST['sort_alphabetically'])) {
-    $query .= " ORDER BY product.prod_name ASC";
+    $query .= " ORDER BY prod_name ASC";
 }else{
     $query .= " ORDER BY RAND()";
 }
 
-echo $query;
-
 $products = $product->get_products_by_filter($query);
-
-// $products = $product->get_products();
 
 
 $total_items = count($products);
