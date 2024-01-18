@@ -71,39 +71,20 @@ $category = new categoryDAO();
             <!-- <img width="48" src="assets/pics_electro/user_av.png" alt="profile" class="user-pic"> -->
             <div class="menuwrp" id="subMenu">
                 <div class="submenu">
-                    <div class="userinfo">
+                <div class="userinfo">
                         <?php
-                        
-                        $displayName = '';
-                        $isAdmin = false;
-                    
-                        if (isset($_SESSION["admin_username"])) {
-                        $displayName = $_SESSION["admin_username"];
-                        $isAdmin = true;
-                        } elseif (isset($_SESSION["username"])) {
-                        $displayName = $_SESSION["username"];
-                        $isAdmin = false;
-                        } if (empty($displayName)) {
-                            echo '<a href="login.php">Login</a>';
-                        } else {
+                            if (isset($_SESSION["User_session"])){
+                                echo '<img src="assets/pics_electro/user_av.png" alt="user">';
+                                echo "<h2>".$_SESSION["User_session"]["name"]."</h2>"; 
+                                echo '<hr>';
+                                if ($_SESSION["User_session"]["role"] == 'admin') {
+                                    echo '<a href="adminpan.php">Admin Panel </a><br>';
+                                }
+                                echo '<a href="logout.php">Logout</a>'; 
+                            }else{
+                                echo '<a href="login.php">Login</a>';
+                            }
                         ?>
-                        <div class="userinfo">
-                            <img src="assets/pics_electro/user_av.png" alt="user">
-                            <h2>
-                                <?php echo $displayName; ?>
-                            </h2>
-                            <hr>
-                            <?php
-                            if ($isAdmin) {
-                                echo '<a href="adminpan.php">Admin Panel </a><br>';
-                            }
-                            echo '<a href="logout.php">Logout</a>'; 
-                            ?>
-                                
-                            <?php
-                            }
-                            ?>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -117,15 +98,13 @@ $category = new categoryDAO();
             <div class="list-group">
                 <h3>Category</h3>
                 <?php
-                if ($isAdmin) {
+                if ($_SESSION["User_session"]["role"] === 'admin') {
                         echo '<div class="my-2">
                         <a class="btn btn-outline-primary" href=add.php>ADD</a>
                         <a class="btn btn-outline-danger mx-3" href=Manage.php>Manage</a>
                         </div>';
                 }
                 ?>
-          
-                
                 <div>
                     <label>
                         <input type="checkbox" class="common_selector" id="sort_alphabetically"> Sort Alphabetically
@@ -172,10 +151,10 @@ $category = new categoryDAO();
 
 
 
-<script src="assets\JS\cart.js"></script>
-<script src="assets\JS\filter.js"></script> 
-<script src="assets\JS\index.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="assets\JS\cart.js"></script>
+    <script src="assets\JS\filter.js"></script> 
+    <script src="assets\JS\index.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 

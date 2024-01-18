@@ -21,14 +21,40 @@ class orderDAO {
         }
         return $Orders;
     }
-
-    public function add_order($order){
-        $query= "INSERT INTO orders (creation_date, shipping_date, delivery_date, total_price, client_id) 
-        VALUES ('".$order->getCreation_date()."','".$order->getShipping_date()."','".$order->getDelivery_date()."',
-                ".$order->getTotal_price().",".$order->getClient_id()." )";
-        echo $query;
+    public function get_lastOrder(){
+        $query="SELECT * FROM orders ORDER BY creation_date DESC LIMIT 1";
         $stmt= $this->db->query($query);
         $stmt -> execute();
+        $OrdersData = $stmt -> fetchAll();
+        foreach($OrdersData as $O){
+            $Order = new Order($O["id"], $O["creation_date"], $O["shipping_date"], $O["delivery_date"], $O["total_price"], $O["bl"], $O["client_id"]);
+
+        }
+        return $Order;
+    }
+
+    public function get_orderByID($id){
+        $query="SELECT * FROM orders WHERE id= $id";
+        $stmt= $this->db->query($query);
+        $stmt -> execute();
+        $OrdersData = $stmt -> fetchAll();
+        foreach($OrdersData as $O){
+            $Order = new Order($O["id"], $O["creation_date"], $O["shipping_date"], $O["delivery_date"], $O["total_price"], $O["bl"], $O["client_id"]);
+
+        }
+        return $Order;
+    }
+
+    public function add_order($order){
+        $query= "INSERT INTO orders (total_price, client_id) 
+        VALUES (".$order->getTotal_price().", ".$order->getClient_id().")";
+        echo $query;
+        $stmt= $this->db->query($query);
+        if($stmt -> execute()){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public function update_order($order){
@@ -37,20 +63,32 @@ class orderDAO {
         echo $query;
         $stmt = $this->db->query($query);
         $stmt -> execute();
+        if($stmt ->rowCount()>0){
+            return true;
+        }else{
+            return false;
+        }
     }
     public function valid_order($id){
         $query= "UPDATE orders SET bl = 1 WHERE id=$id ";
-                echo $query;
-                $stmt= $this->db->query($query);
-                $stmt -> execute();
-
+        $stmt= $this->db->query($query);
+        $stmt -> execute();
+        if( $stmt->rowCount() != 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    public function unverify_client($id){
+    public function unverify_order($id){
         $query= "UPDATE orders SET bl = 0 WHERE id=$id ";
-        echo $query;
         $stmt = $this->db->query($query);
         $stmt -> execute();
+        if( $stmt->rowCount() != 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     
@@ -58,6 +96,11 @@ class orderDAO {
         $query= "DELETE FROM orders WHERE id=$id ";
         $stmt= $this->db->query($query);
         $stmt -> execute();
+        if( $stmt->rowCount() != 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

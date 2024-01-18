@@ -1,4 +1,5 @@
 <?php
+// include("connection.php");
 class Admin{
     private $id;
     private $username;
@@ -46,6 +47,17 @@ class adminDAO{
 
         }
         return $admins;
+    }
+    public function get_admin_by_username($U){
+        $query="SELECT * FROM admins WHERE username='$U'";
+        $stmt= $this->db->query($query);
+        $stmt -> execute();
+        $adminsData = $stmt -> fetchAll();
+        foreach($adminsData as $A){
+            $admin = new Admin($A["id"], $A["username"], $A["email"], $A["passw"],);
+
+        }
+        return $admin;
     }
 }
 

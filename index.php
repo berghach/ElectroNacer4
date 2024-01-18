@@ -75,37 +75,18 @@ require_once("adminDAO.php");
                 <div class="submenu">
                     <div class="userinfo">
                         <?php
-                        
-                        $displayName = '';
-                        $isAdmin = false;
-                    
-                        if (isset($_SESSION["admin_username"])) {
-                        $displayName = $_SESSION["admin_username"];
-                        $isAdmin = true;
-                        } elseif (isset($_SESSION["username"])) {
-                        $displayName = $_SESSION["username"];
-                        $isAdmin = false;
-                        } if (empty($displayName)) {
-                            echo '<a href="login.php">Login</a>';
-                        } else {
+                            if (isset($_SESSION["User_session"])){
+                                echo '<img src="assets/pics_electro/user_av.png" alt="user">';
+                                echo "<h2>".$_SESSION["User_session"]["name"]."</h2>"; 
+                                echo '<hr>';
+                                if ($_SESSION["User_session"]["role"] == 'admin') {
+                                    echo '<a href="adminpan.php">Admin Panel </a><br>';
+                                }
+                                echo '<a href="logout.php">Logout</a>'; 
+                            }else{
+                                echo '<a href="login.php">Login</a>';
+                            }
                         ?>
-                        <div class="userinfo">
-                            <img src="assets/pics_electro/user_av.png" alt="user">
-                            <h2>
-                                <?php echo $displayName; ?>
-                            </h2>
-                            <hr>
-                            <?php
-                            if ($isAdmin) {
-                                echo '<a href="adminpan.php">Admin Panel </a><br>';
-                            }
-                            echo '<a href="logout.php">Logout</a>'; 
-                            ?>
-                                
-                            <?php
-                            }
-                            ?>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -266,9 +247,6 @@ require_once("adminDAO.php");
     <script src="assets/JS/cart.js"></script>
     <script src="assets/JS/filter.js"></script>
 
-    <?php
-    session_destroy();
-    ?>
 
 </body>
 </html>

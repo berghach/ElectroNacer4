@@ -131,7 +131,6 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
         </div>
     </div>
 </nav>
-
 <div class="container formedit   bg-light col-8 mt-5 rounded py-2">
     <h2 class="text-center mb-4">Add Items</h2>
     <form method="post" action="" enctype="multipart/form-data" class="my-5">

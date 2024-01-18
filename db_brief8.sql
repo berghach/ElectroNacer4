@@ -151,7 +151,6 @@ CREATE TABLE orderproduct(
     order_id INT,
     product_ref INT,
     quantity INT,
-    price FLOAT(2),
     PRIMARY KEY(order_id, product_ref),
     CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     CONSTRAINT fk_product FOREIGN KEY (product_ref) REFERENCES product(ref)

@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+//Check if the user is logged in and is an admin
+if ($_SESSION["User_session"]["role"] != 'admin') {
+    header("Location: index.php");
+    exit();
+}
+
 require_once("productDAO.php");
 $product = new productDAO();
 $products=$product-> get_products();
@@ -13,18 +19,7 @@ $admin=new adminDAO();
 require_once("orderDAO.php");
 $order=new orderDAO();
 
-//Check if the user is logged in and is an admin
-if (isset($_SESSION["admin_username"])) {
-    $isAdmin = true;
-} elseif (isset($_SESSION["username"])) {
-    $isAdmin = false;
-} else {
-    header("Location: index.php");
-    exit();
-}
 
-// Establish a database connection (replace these with your actual database details)
-require_once("config.php");
 
 // Handle delete clients request
 if (isset($_GET["delete_user"])) {
@@ -62,15 +57,6 @@ if (isset($_GET["unverify_user"])) {
 }
 
 
-// // Retrieve all for display 
-// //$select_users_sql = "SELECT * FROM users";
-// $client_result = $conn->query("SELECT * FROM clients");
-// //$select_admins_sql = "SELECT * FROM admins";
-// $admins_result = $conn->query("SELECT * FROM admins");
-// $order_result = $conn->query("SELECT orders.id, orders.creation_date, clients.fullname 
-//                                 FROM orders  INNER JOIN clients 
-//                                 ON orders.client_id=clients.id");
-
 ?>
 
 <!DOCTYPE html>
@@ -89,7 +75,7 @@ if (isset($_GET["unverify_user"])) {
 </head>
 <!--style="background: linear-gradient(to bottom, #6ab1e7,#023364)"-->
 <body>
-<nav class="navbar navbar-expand-sm navbar-dark z-1">
+<nav class="navbar navbar-expand-sm navbar-dark ">
     <div class="container">
         <a href="#" class="navbar-brand">NE</a>
         
@@ -106,66 +92,24 @@ if (isset($_GET["unverify_user"])) {
                     <a href="items.php" class="nav-link">items</a>
                 </li>
             </ul>
-            <span class="navbar-text">
-            <a href="#" class="nav-link" data-toggle="modal" data-target="#cartModal">
-                <ion-icon class="fs-4" name="cart-outline"></ion-icon>
-            </a>
-            </span>
-            <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="cartModalLabel">Shopping Cart</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body" id="cartItems">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <ion-icon name="person-outline" class="user-pic text-light fs-4 fw-bold icon-link icon-link-hover"></ion-icon>
             <!-- <img width="48" src="assets/pics_electro/user_av.png" alt="profile" class="user-pic"> -->
             <div class="menuwrp" id="subMenu">
                 <div class="submenu">
-                    <div class="userinfo">
+                <div class="userinfo">
                         <?php
-                        
-                        $displayName = '';
-                        $isAdmin = false;
-                    
-                        if (isset($_SESSION["admin_username"])) {
-                        $displayName = $_SESSION["admin_username"];
-                        $isAdmin = true;
-                        } elseif (isset($_SESSION["username"])) {
-                        $displayName = $_SESSION["username"];
-                        $isAdmin = false;
-                        } if (empty($displayName)) {
-                            echo '<a href="login.php">Login</a>';
-                        } else {
+                            if (isset($_SESSION["User_session"])){
+                                echo '<img src="assets/pics_electro/user_av.png" alt="user">';
+                                echo "<h2>".$_SESSION["User_session"]["name"]."</h2>"; 
+                                echo '<hr>';
+                                if ($_SESSION["User_session"]["role"] == 'admin') {
+                                    echo '<a href="adminpan.php">Admin Panel </a><br>';
+                                }
+                                echo '<a href="logout.php">Logout</a>'; 
+                            }else{
+                                echo '<a href="login.php">Login</a>';
+                            }
                         ?>
-                        <div class="userinfo">
-                            <img src="assets/pics_electro/user_av.png" alt="user">
-                            <h2>
-                                <?php echo $displayName; ?>
-                            </h2>
-                            <hr>
-                            <?php
-                            if ($isAdmin) {
-                                echo '<a href="adminpan.php">Admin Panel </a><br>';
-                            }
-                            echo '<a href="logout.php">Logout</a>'; 
-                            ?>
-                                
-                            <?php
-                            }
-                            ?>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -257,7 +201,7 @@ if (isset($_GET["unverify_user"])) {
                         echo "<td>".$or->getId()."</td>";
                         echo "<td>".$or->getCreation_date()."</td>";
 
-                        echo "<td>".$client->get_client_by_id($or->getId())->getFull_name()."</td>";
+                        echo "<td>".$client->get_client_by_id($or->getClient_id())->getFull_name()."</td>";
                         echo "<td>";
                         echo "<a href='order_detail.php?reference=".$or->getId()."' class='btn btn-info btn-sm mr-2'>Detail</a>";
                         echo "</td>";

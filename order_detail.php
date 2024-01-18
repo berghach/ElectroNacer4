@@ -1,44 +1,44 @@
 <?php
-require_once("config.php");
 session_start();
 
-if (isset($_SESSION["admin_username"])) {
-    $isAdmin = true;
-} else {
+//Check if the user is logged in and is an admin
+if ($_SESSION["User_session"]["role"] != 'admin') {
     header("Location: index.php");
     exit();
 }
+
+require_once("clientDAO.php");// file DAO containe client method including get_client()
+$client = new clientDAO();
+require_once("orderDAO.php");
+$orderDAO = new orderDAO();
+require_once("orderProductModel.php");
+$orderprodDAO = new orderProductDAO();
+require_once("productDAO.php");
+$productDAO = new productDAO();
 
 // manage order's status
 if (isset($_GET["verify_order"])) {
     $ord_id = $_GET["verify_order"];
 
-    $stmt = $conn->prepare("UPDATE orders SET bl = 1 WHERE id = $ord_id");
-    $stmt->execute();
-    
-
-    header("Location: order_detail.php?reference={$ord_id}");
-    exit();
+    $orderDAO->valid_order($ord_id);
+        header("Location: order_detail.php?reference='$ord_id'");
+        exit();
 }
 
 if (isset($_GET["unverify_order"])) {
     $ord_id = $_GET["unverify_order"];
 
-    $stmt = $conn->prepare("UPDATE orders SET bl = 0 WHERE id = $ord_id");
-    $stmt->execute();
-
-    header("Location: order_detail.php?reference={$ord_id}");
-    exit();
+    $orderDAO->unverify_order($ord_id);
+        header("Location: order_detail.php?reference='$ord_id'");
+        exit();
 }
 
 if (isset($_GET["delete_order"])) {
     $ord_id = $_GET["delete_order"];
 
-    $stmt = $conn->prepare("DELETE FROM orders WHERE id = $ord_id");
-    $stmt->execute();
-
-    header("Location: adminpan.php");
-    exit();
+    $orderDAO->delete_order($ord_id);
+        header("Location: adminpan.php");
+        exit();
 }
 ?>
 
@@ -48,31 +48,16 @@ if (isset($_GET["delete_order"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Order detail</title>
+    <link rel="stylesheet" href="assets\CSS\style.css">
+    <link rel="stylesheet" href="assets\CSS\home.css">
+    <link rel="stylesheet" href="assets\CSS\basket.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            
-        }
-
-        .product-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .product-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <body>
@@ -122,37 +107,18 @@ if (isset($_GET["delete_order"])) {
                 <div class="submenu">
                     <div class="userinfo">
                         <?php
-                        
-                        $displayName = '';
-                        $isAdmin = false;
-                    
-                        if (isset($_SESSION["admin_username"])) {
-                        $displayName = $_SESSION["admin_username"];
-                        $isAdmin = true;
-                        } elseif (isset($_SESSION["username"])) {
-                        $displayName = $_SESSION["username"];
-                        $isAdmin = false;
-                        } if (empty($displayName)) {
-                            echo '<a href="login.php">Login</a>';
-                        } else {
+                            if (isset($_SESSION["User_session"])){
+                                echo '<img src="assets/pics_electro/user_av.png" alt="user">';
+                                echo "<h2>".$_SESSION["User_session"]["name"]."</h2>"; 
+                                echo '<hr>';
+                                if ($_SESSION["User_session"]["role"] == 'admin') {
+                                    echo '<a href="adminpan.php">Admin Panel </a><br>';
+                                }
+                                echo '<a href="logout.php">Logout</a>'; 
+                            }else{
+                                echo '<a href="login.php">Login</a>';
+                            }
                         ?>
-                        <div class="userinfo">
-                            <img src="assets/pics_electro/user_av.png" alt="user">
-                            <h2>
-                                <?php echo $displayName; ?>
-                            </h2>
-                            <hr>
-                            <?php
-                            if ($isAdmin) {
-                                echo '<a href="adminpan.php">Admin Panel </a><br>';
-                            }
-                            echo '<a href="logout.php">Logout</a>'; 
-                            ?>
-                                
-                            <?php
-                            }
-                            ?>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -165,16 +131,10 @@ if (isset($_GET["delete_order"])) {
         if (isset($_GET['reference'])) {
             $order_id = $_GET['reference'];
             // Fetch product details from the database based on the reference
-            $order_result = $conn->query("SELECT orders.id, clients.fullname, orders.creation_date, orders.shipping_date, orders.delivery_date, orders.total_price, orders.bl
-                                            FROM orders  INNER JOIN clients 
-                                            ON orders.client_id=clients.id WHERE orders.id=$order_id");
-            $order_prod_result = $conn->query("SELECT products.reference, products.productname, products.purchase_price, orderproduct.quantity 
-                                                FROM products INNER JOIN orderproduct
-                                                ON orderproduct.product_ref = products.reference WHERE orderproduct.order_id=$order_id");
+            $order = $orderDAO->get_orderByID($order_id);
+            $orderProducts = $orderprodDAO->get_ordProducts($order_id);
 
-            if (!empty($order_result)) {
-                $ord=$order_result->fetch_assoc();
-
+            if (!empty($order)) {
                 // Display order details 
                 echo '<div class="row">';
                 echo '<div class="container mt-5">';
@@ -189,14 +149,13 @@ if (isset($_GET["delete_order"])) {
                 echo '<th>delivring date</th>';
                 echo '</tr>';
                 echo '</thead>';
-                // $ord = $order_detail-> fetch_assoc();
                 echo '<tbody>';
                 echo '<tr>';
-                echo "<td>{$ord['id']}</td>";
-                echo "<td>{$ord['fullname']}</td>";
-                echo "<td>{$ord['creation_date']}</td>";
-                echo "<td>{$ord['shipping_date']}</td>";
-                echo "<td>{$ord['delivery_date']}</td>";
+                echo "<td>".$order->getId()."</td>";
+                echo "<td>".$client->get_client_by_id($order->getClient_id())->getFull_name()."</td>";
+                echo "<td>".$order->getCreation_date()."</td>";
+                echo "<td>".$order->getShipping_date()."</td>";
+                echo "<td>".$order->getDelivery_date()."</td>";
                 echo '</tr>';
                 echo '</tbody>';
                 echo '</table>';
@@ -212,29 +171,29 @@ if (isset($_GET["delete_order"])) {
                 echo '</tr>';
                 echo '</thead>';
                 echo '<tbody>';
-                while($ord_prod = $order_prod_result->fetch_assoc()){
+                foreach($orderProducts as $row){
                     echo '<tr>';
-                    echo "<td>{$ord_prod['reference']}</td>";
-                    echo "<td>{$ord_prod['productname']}</td>";
-                    echo "<td>{$ord_prod['quantity']}</td>";
-                    $prod_price = $ord_prod['purchase_price']*$ord_prod['quantity'];
+                    echo "<td>".$productDAO->get_products_by_id($row->get_product_id())->getRef()."</td>";
+                    echo "<td>".$productDAO->get_products_by_id($row->get_product_id())->getProd_name()."</td>";
+                    echo "<td>".$row->get_quantity()."</td>";
+                    $prod_price = $productDAO->get_products_by_id($row->get_product_id())->getfinal_price() * $row->get_quantity();
                     echo "<td>{$prod_price}</td>";
                     echo '</tr>';
                 }
                 echo '</tbody>';
                 echo '</table>';
-                echo "<h5>Order's total Price:{$ord['total_price']}</h5>";
+                echo "<h5>Order's total Price:".$order->getTotal_price()."</h5>";
                 echo '<div class="d-flex align-items-center column-gap-5">';
                 echo "<h5>Order's status</h5>";
-                if (isset($ord['bl']) && $ord['bl'] == 0) {
+                if ($order->getBl() == 0) {
                     echo "<p>Unvalid order</p>";
-                    echo "<a href='order_detail.php?verify_order={$ord['id']}' class='btn btn-success btn-sm mr-2'>Valid</a>";
+                    echo "<a href='order_detail.php?verify_order=".$order->getId()."' class='btn btn-success btn-sm mr-2'>Valid</a>";
                 }else {
                     echo "<p>Valid order</p>";
-                    echo "<a href='order_detail.php?unverify_order={$ord['id']}' class='btn btn-warning btn-sm mr-2'>Unvalid</a>";
+                    echo "<a href='order_detail.php?unverify_order=".$order->getId()."' class='btn btn-warning btn-sm mr-2'>Unvalid</a>";
                 }
                 echo '</div>';
-                echo "<a href='order_detail.php?delete_order={$ord['id']}' class='btn btn-danger btn-sm mr-2'>Delete order</a>";
+                echo "<a href='order_detail.php?delete_order=".$order->getId()."' class='btn btn-danger btn-sm mr-2'>Delete order</a>";
                 echo '</div>';
                 echo '</div>';
                 
@@ -253,11 +212,14 @@ if (isset($_GET["delete_order"])) {
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <!--/icones component-->
 
-    <script src="index.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+
+    <script src="assets\JS\cart.js"></script>
+    <script src="assets\JS\filter.js"></script> 
+    <script src="assets\JS\index.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script src="assets/js/home.js"></script>
 
 </body>
 

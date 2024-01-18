@@ -11,49 +11,76 @@
 <nav class="navbar navbar-expand-sm navbar-dark ">
     <div class="container">
         <a href="#" class="navbar-brand">NE</a>
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a href="index.php" class="nav-link">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="items.php" class="nav-link">items</a>
-            </li>
-        </ul>
-        <img width="48" src="img/user-286-128.png" alt="profile" class="user-pic">
-        <div class="menuwrp" id="subMenu">
-            <div class="submenu">
-        <?php
-            session_start(); 
-            
-            
-            if (isset($_SESSION["admin_username"])) {
-              $displayName = $_SESSION["admin_username"];
-            } elseif (isset($_SESSION["username"])) {
-              $displayName = $_SESSION["username"];
-            } else {
-             
-              header("Location: login.php");
-              exit();
-            }
-            ?>
-            <div class="userinfo">
-              <img src="img/user-286-128.png" alt="user">
-              <h2>
-                <?php echo $displayName; ?>
-              </h2>
-              <hr>
-              <?php
-                    if ($isAdmin) {
-                        echo '<a href="adminpan.php">Admin Panel</a>';
-                    }
-                    ?>
-              <a href="logout.php">Log Out</a>
+        
+        <!-- Add the burger menu button for smaller screens -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="index.php" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="items.php" class="nav-link">items</a>
+                </li>
+            </ul>
+            <span class="navbar-text">
+            <a href="#" class="nav-link" data-toggle="modal" data-target="#cartModal">
+                <ion-icon class="fs-4" name="cart-outline"></ion-icon>
+            </a>
+            </span>
+            <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cartModalLabel">Shopping Cart</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="cartItems">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ion-icon name="person-outline" class="user-pic text-light fs-4 fw-bold icon-link icon-link-hover"></ion-icon>
+            <!-- <img width="48" src="assets/pics_electro/user_av.png" alt="profile" class="user-pic"> -->
+            <div class="menuwrp" id="subMenu">
+                <div class="submenu">
+                <div class="userinfo">
+                        <?php
+                    
+                        if (isset($_SESSION["User_session"])) {
+                        $displayName = $_SESSION["User_session"]["name"];
+                        $role = $_SESSION["User_session"]["role"];
+                        }else{
+                            echo '<a href="login.php">Login</a>';
+                        }
+                        ?>
+                        <div class="userinfo">
+                            <img src="assets/pics_electro/user_av.png" alt="user">
+                            <h2>
+                                <?php echo $displayName; ?>
+                            </h2>
+                            <hr>
+                            <?php
+                            if ($role = 'admin') {
+                                echo '<a href="adminpan.php">Admin Panel </a><br>';
+                            }
+                            echo '<a href="logout.php">Logout</a>'; 
+                            ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </nav>
-
 <?php
 include("config.php");
 // Function to display category details in a form

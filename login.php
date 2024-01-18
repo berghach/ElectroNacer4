@@ -14,39 +14,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
     $password = $_POST["password"];
 
-    if (!empty($admins)){
-        foreach ($admins as $adm){ // Check if it's an admin
-            if ($username == $adm->getUsername()) {
-                if($password == $adm->getPassw()){
+    $userSESSION = array();
 
-                    $_SESSION["admin_username"] = $username;
-                    $_SESSION["is_admin"] = true;
-    
-                    header("Location: index.php");
-                    exit();
-                }else {
-                    echo "Error: Incorrect admin password.";
-                }
-            }
+    if(!empty($loginUser = $admin->get_admin_by_username($username))) {
+        if($password == $loginUser->getPassw()){
+            $userSESSION["name"] = $username;
+            $userSESSION["role"] = 'admin';
+            $_SESSION["User_session"] = $userSESSION;
+
+            header('Location: index.php');
+            exit();
+        }else{
+            $_SESSION['login_error'] = 'Error: password incorrect';
+            header("Location: login.php");
+            exit();
+        }
+    }elseif(!empty($loginUser= $client->get_client_by_username($username))) {
+        if(password_verify($password,$loginUser->getPsw())){
+            $userSESSION["name"] = $loginUser->getFull_name();
+            $userSESSION["username"] = $username;
+            $userSESSION["role"] = 'client';
+            $_SESSION["User_session"] = $userSESSION;
+
+            header('Location: index.php');
+            exit();
+        }else{
+            $_SESSION['login_error'] = 'Error: password incorrect';
+            header("Location: login.php");
+            exit();
         }
     }else{
-        if (!empty($clients)) { //check if it's the client
-            foreach( $clients as $cl){
-                if ($username == $cl->getUsername()) {
-                    if(password_verify($password, $cl->getPsw())==true){
-                        $_SESSION["client_username"] = $username;
-                        $_SESSION["is_client"] = true;
-
-                        header("Location: index.php");
-                        exit();
-                    }else {
-                        echo "Error: Incorrect password.";
-                    }
-                }
-            }
-        } else {
-            echo "Error: User not found.";
-        }  
+        $_SESSION['login_error'] = 'Error: User not found';
+        header("Location: login.php");
+        exit();
     }
 }
 
@@ -74,6 +74,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="container-fluid d-flex flex-column align-items-center p-2">
             <h1>Login</h1>
+            <?php
+                if (isset($_SESSION['login_error'])) {
+                    echo '<div style="color: red; font-weight: bold; text-align: left;">' . $_SESSION['login_error'] . '</div>';
+                }
+            ?>
             <form class="login-form" action="login.php" method="POST">
                 <input class="form-control mb-2" type="text" id="username" name="username" placeholder="Username" required>
                 <input class="form-control mb-2" type="password" id="password" name="password" placeholder="Password" required>
@@ -104,6 +109,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!--JS-->
     
     <!--/JS-->
-
+    <?php
+    session_destroy();
+    ?>
 </body>
 </html>

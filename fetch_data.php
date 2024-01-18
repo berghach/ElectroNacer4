@@ -7,9 +7,9 @@ require_once("categoryDAO.php");
 function generateProductCard($pr) {
     $category = new categoryDAO();
 
-    $isAdmin = isset($_SESSION['is_admin']);
+    // $isAdmin = isset();
 
-    $adminButton = $isAdmin ? '<a href="Modify.php?product_id=' . $pr->getRef() . '" class="btn btn-danger btn-sm admin-only-button">Modify</a>' : '';
+    $adminButton = $_SESSION["User_session"]["role"] == 'admin' ? '<a href="Modify.php?product_id=' . $pr->getRef() . '" class="btn btn-danger btn-sm admin-only-button">Modify</a>' : '';
 
         return '<div class="col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card h-100 border-0 shadow product-card">
@@ -47,7 +47,7 @@ $offset = ($page - 1) * $limit;
 
 
 // Regular query
-$query = "SELECT * FROM product WHERE bl = 1";
+$query = 'SELECT * FROM product WHERE bl = 1';
 
 if (isset($_POST["category"]) && !empty($_POST["category"])) {
     $query .= " AND category_fk IN (".$_POST["category"].")";
@@ -67,8 +67,9 @@ if (isset($_POST['sort_alphabetically']) && !empty($_POST['sort_alphabetically']
     $query .= " ORDER BY RAND()";
 }
 
-$products = $product->get_products_by_filter($query);
 
+
+$products = $product->get_products_by_filter($query);
 
 $total_items = count($products);
 

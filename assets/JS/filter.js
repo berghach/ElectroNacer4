@@ -10,7 +10,7 @@ function filter_data(page) {
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                // console.log(xhr.response);
+                console.log(xhr.response);
                 document.querySelector('.filter_data').innerHTML = xhr.responseText;
             }
         }
@@ -21,7 +21,7 @@ function filter_data(page) {
             "&sort_alphabetically=" + (sortAlphabetically ? 1 : 0) +
             "&stock_filter=" + (stockFilter ? 1 : 0) +
             "&page=" + page;
-        // console.log(data);
+        console.log(data);
         xhr.send(data);
     }
     
@@ -43,8 +43,6 @@ function filter_data(page) {
             filter_data(1); // Reset to the first page when changing filters
         });
     });
-    // console.log('category');
-    xhr.send(category);
 
     // Initial load
 filter_data(1);   

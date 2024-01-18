@@ -33,7 +33,17 @@ class clientDAO {
         }
         return $Client;
     }
-
+    public function get_client_by_username($U){
+        $query= "SELECT * FROM client WHERE username= '$U'";
+        $stmt= $this->db->query($query);
+        $stmt -> execute();
+        $ClientData = $stmt -> fetchAll();
+        foreach($ClientData as $C){
+            $Client = new Client($C["id"], $C["full_name"], $C["adresse"], $C["city"], $C["phonenumber"], $C["username"], $C["e_mail"], $C["psw"],$C["activ_account"]);
+            
+        }
+        return $Client;
+    }
 
     public function insert_client($client) {
         $query = "INSERT INTO client (full_name, adresse, city, phonenumber, username, e_mail, psw) 
